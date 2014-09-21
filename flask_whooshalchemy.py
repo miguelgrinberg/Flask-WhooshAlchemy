@@ -37,6 +37,13 @@ __searchable__ = '__searchable__'
 DEFAULT_WHOOSH_INDEX_NAME = 'whoosh_index'
 
 
+# handle unicode type in Python 3
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 class _QueryProxy(flask_sqlalchemy.BaseQuery):
     # We're replacing the model's ``query`` field with this proxy. The main
     # thing this proxy does is override the __iter__ method so that results are
@@ -99,7 +106,7 @@ class _QueryProxy(flask_sqlalchemy.BaseQuery):
         parameter to ``True``.
 
         '''
-            
+
         if not isinstance(query, unicode):
             query = unicode(query)
 
@@ -152,7 +159,7 @@ class _Searcher(object):
 
 
 def whoosh_index(app, model):
-    ''' Create whoosh index for ``model``, if one does not exist. If 
+    ''' Create whoosh index for ``model``, if one does not exist. If
     the index exists it is opened and cached. '''
 
     # gets the whoosh index for this model, creating one if it does not exist.
@@ -198,7 +205,7 @@ def _create_index(app, model):
 
     # change the query class of this model to our own
     model.query_class = _QueryProxy
-    
+
     return indx
 
 
@@ -236,7 +243,7 @@ def _after_flush(app, changes):
             bytype.setdefault(change[0].__class__.__name__, []).append((update,
                 change[0]))
 
-    for model, values in bytype.iteritems():
+    for model, values in bytype.items():
         index = whoosh_index(app, values[0][1].__class__)
         with index.writer() as writer:
             primary_field = values[0][1].pure_whoosh.primary_key_name
@@ -266,5 +273,5 @@ flask_sqlalchemy.models_committed.connect(_after_flush)
 #     app = db.get_app()
 # #    for table in db.get_tables_for_bind():
 #     for item in globals():
-# 
+#
 #        #_create_index(app, table)

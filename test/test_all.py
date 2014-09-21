@@ -79,7 +79,7 @@ class Tests(TestCase):
     def tearDown(self):
         try:
             shutil.rmtree(self.app.config['WHOOSH_BASE'])
-        except OSError, e:
+        except OSError as e:
             if e.errno != 2:  # code 2 - no such file or directory
                 raise
 
@@ -91,7 +91,7 @@ class Tests(TestCase):
         # pending.
 
         from flask.ext.sqlalchemy import before_models_committed, models_committed
-        
+
         before_models_committed.connect(_after_flush)
         models_committed.connect(_after_flush)
         db.session.add(ObjectB(title=u'my title', content=u'hello world'))
