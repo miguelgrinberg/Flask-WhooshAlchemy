@@ -15,7 +15,7 @@ from __future__ import with_statement
 from __future__ import absolute_import
 
 
-import flask.ext.sqlalchemy as flask_sqlalchemy
+import flask_sqlalchemy as flask_sqlalchemy
 
 import sqlalchemy
 
